@@ -1,1 +1,1 @@
-# RE-ZombieVisualNovel
+# RE: 좀비연시
