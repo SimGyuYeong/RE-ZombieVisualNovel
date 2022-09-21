@@ -6,22 +6,37 @@ using UnityEngine.Networking;
 public class LinkGoogleSheet
 {
     // 구글 스프레드시트 링크
-    private const string URL = "https://docs.google.com/spreadsheets/d/18d1eO7_f3gewvcBi5MIe0sqh50lp1PF-kkQg2nm03wg/export?format=tsv";
+    private string URL = "";
+
+    public LinkGoogleSheet(string url)
+    {
+        URL = url;
+    }
 
     // 대화 저장
-    private string _text;
-    public string Text => _text;
+    private string[][] _text;
+    public string[][] Text => _text;
 
     /// <summary>
     /// 구글 스프레드시트 내용 불러오기
     /// </summary>
     /// <returns></returns>
-    public IEnumerator LoadGoogleSheet(string url)
+    public IEnumerator LoadGoogleSheet()
     {
-        UnityWebRequest www = UnityWebRequest.Get(url);
+        UnityWebRequest www = UnityWebRequest.Get(URL);
         yield return www.SendWebRequest();
 
         string data = www.downloadHandler.text;
+        string[] line = data.Split('\n');
+        
+        for(int i = 0; i < line.Length; i++)
+        {
+            string[] row = line[i].Split('\t');
+            for(int j = 0; j < row.Length; j++)
+            {
+                Text[i][j] = row[j].Trim();
+            }
+        }
     }
 
     /// <summary>
@@ -32,6 +47,6 @@ public class LinkGoogleSheet
     /// <returns></returns>
     public string GetText(int height, int weight)
     {
-        return _text;
+        return Text[height][weight];
     }
 }
